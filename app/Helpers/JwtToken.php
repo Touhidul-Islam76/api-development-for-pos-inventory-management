@@ -8,88 +8,69 @@ use Illuminate\Support\Facades\Log;
 
 class JwtToken
 {
-    //JWT token create
-    public static function createToken( array $userData, int $exp ){
+    // Create JWT Token
+    public static function createToken(array $userData, int $exp): array
+    {
+        try {
+            $key = config('jwt.jwt_key');
 
-        try{
+            $payload = $userData + [
+                'iss' => 'Pos_Inventory_Management_System',
+                'iat' => time(),
+                'exp' => $exp,
+            ];
 
-            $key = config('jwt.jwt_key'); //"fetching secret key from config/jwt.php file"
+            $token = JWT::encode($payload, $key, 'HS256');
 
-        $payload = $userData + [
-            'iss' => 'Pos_Inventory_Management_System', //issuer name
-            'iat' => time(), //issued at
-            'exp' => $exp, //expire time
-        ];
+            return [
+                'error' => false,
+                'token' => $token
+            ];
 
-         $token = JWT::encode( $payload, $key, 'HS512' ); //generating token with HS512 algorithm, with secret key($key) and payload data($payload)
-        
-         return response()->json([
+        } catch (\Exception $e) {
 
-            'error' => 'false',
-            'token' => $token
+            Log::critical($e->getMessage().' '.$e->getFile().' '.$e->getLine());
 
-         ]);
-
-
-        }catch(\Exception $e){
-
-            Log::critical($e->getMessage().''.$e->getFile().''.$e->getLine());  //here log means saving error message in laravel log file(storage/logs/laravel.log) and critical means error level & it has more level like ( emergency, alert, error, warning, notice, info, debug )
-
-            return response()->json([
-
-                'error' =>'true',
+            return [
+                'error' => true,
                 'message' => 'Token generation failed',
                 'details' => $e->getMessage()
-
-            ]);
+            ];
         }
-
-        
     }
 
 
-    //JWT token verify
-    public static function verifyToken( string $token ){
+    // Verify JWT Token
+    public static function verifyToken(string $token): array
+    {
+        try {
+            $key = config('jwt.jwt_key');
 
-        try{
-
-            $key = config('jwt.jwt_key'); //"fetching secret key from config/jwt.php file"
-
-
-            if( !$token ){
-
-                return response()->json([
-
-                    'error' => 'true',
+            if (!$token) {
+                return [
+                    'error' => true,
                     'payload' => [],
                     'message' => 'Token not provided'
-
-                 ]);
-
+                ];
             }
 
-            $payload = JWT::decode( $token, new Key( ($key), 'HS512' ) ); //"decoding token with HS512 algorithm, with secret key($key) and token($token) &key must be imported from Firebase\JWT\Key"
-            return response()->json([
+            $payload = JWT::decode($token, new Key($key, 'HS256'));
 
-                'error' => 'false',
+            return [
+                'error' => false,
                 'payload' => $payload,
                 'message' => 'Token verified successfully'
+            ];
 
-             ]);
+        } catch (\Exception $e) {
 
-        }catch(\Exception $e){
+            Log::critical($e->getMessage().' '.$e->getFile().' '.$e->getLine());
 
-            Log::critical($e->getMessage().''.$e->getFile().''.$e->getLine());  //here log means saving error message in laravel log file(storage/logs/laravel.log) and critical means error level & it has more level like ( emergency, alert, error, warning, notice, info, debug )
-
-            return response()->json([
-
-                'error' =>'true',
+            return [
+                'error' => true,
                 'payload' => [],
-                'message' => 'Token verification failed',
-                
-
-            ]);
+                'message' => 'Token verification failed'
+            ];
         }
-
     }
 }

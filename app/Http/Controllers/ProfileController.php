@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class LogoutController extends Controller
+class ProfileController extends Controller
 {
+    public function profile(){
+        return Auth::user();
+    }
+
     public function logout(){
         return response()->json([
             'success' => 'true',
             'message' => 'Logout successful',
-        ], 200)->withoutCookie('loginToken');        
+        ], 200)->withoutCookie('loginToken');
     }
 }
