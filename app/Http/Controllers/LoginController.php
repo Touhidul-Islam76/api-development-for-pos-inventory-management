@@ -26,6 +26,8 @@ class LoginController extends Controller
         $userData =[
             'id' => $user->id,
             'email' => $user->email,
+            'role' => $user->role,
+            'avatar' => $user->profile->avatar_url,
             ];
 
         $exp = time() + 60*60*24; // Token valid for 24 hours

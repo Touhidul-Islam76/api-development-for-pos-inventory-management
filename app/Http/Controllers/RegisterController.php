@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
@@ -13,12 +15,26 @@ class RegisterController extends Controller
     {
         try{
 
-            User::create($req->validated());
+            $validate = $req->validated();
+
+            $userData = Arr::only( $validate, [ 'name', 'email', 'password', 'role' ] );
+            $profileData = Arr::only( $validate, [ 'phone', 'address' ] );
+
+            $user = User::create( $userData );
+
+            $profileData['user_id'] = $user->id;
+
+            if( $req->hasFile('avatar') ){
+                $avatarPath = $req->file('avatar')->store('avatars', 'public');
+                $profileData['avatar'] = $avatarPath;
+            }
+
+            Profile::create( $profileData );
 
             return response()->json([
 
                 'success' => 'true',
-                'message' => 'User registered successfully',
+                'message' => 'User registered successfully and profile created',
 
             ],201);
 
