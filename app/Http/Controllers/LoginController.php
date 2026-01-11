@@ -7,16 +7,18 @@ use App\Http\Requests\LoginReq;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
     public function login( LoginReq $req )
     {
-        $user = User::where('email', $req->email)->first();
+        try{
+            $user = User::where('email', $req->email)->first();
         if(!Hash::check($req->password, $user->password)){
             return response()->json([
 
-                'error' => 'true',
+                'error' => true,
                 'message' => 'Invalid credentials',
 
             ], 401);
@@ -35,9 +37,20 @@ class LoginController extends Controller
         $token = JwtToken::createToken( $userData, $exp );
         return response()->json([
 
-            'success' => 'true',
+            'success' => true,
             'message' => 'Login successful',
 
         ], 200)->cookie('loginToken', $token['token'], 60*24); //setting cookie for 24 hours
+
+        }catch(\Exception $e){
+            Log::critical(
+            $e->getMessage().' | '.$e->getFile().' | '.$e->getLine()
+        );
+
+        return response()->json([
+            'status'  => false,
+            'message' => 'Server error. Please try again later.',
+        ], 500);
+        }
     }
 }

@@ -30,14 +30,14 @@ class ResetPasswordRequest extends FormRequest
 
 
     // Customize the validation failure response to return JSON and applied to other request files
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'error' => true,
-                'message' => 'Validation failed',
-                'details' => $validator->errors()->all(),
-            ], 422)
-        );
-    }
+    // protected function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(
+    //         response()->json([
+    //             'error' => true,
+    //             'message' => 'Validation failed',
+    //             'details' => $validator->errors()->all(),
+    //         ], 422)
+    //     );
+    // }
 }

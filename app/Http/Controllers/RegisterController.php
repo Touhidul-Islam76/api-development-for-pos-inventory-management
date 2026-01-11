@@ -33,7 +33,7 @@ class RegisterController extends Controller
 
             return response()->json([
 
-                'success' => 'true',
+                'status' => true,
                 'message' => 'User registered successfully and profile created',
 
             ],201);
@@ -44,7 +44,7 @@ class RegisterController extends Controller
 
             return response()->json([
 
-                'error' =>'true',
+                'status' =>false,
                 'message' => 'Something went wrong',
 
             ],500);

@@ -30,7 +30,7 @@ class ResetPasswordController extends Controller
 
             return response()->json([
 
-                'success' => 'true',
+                'status' => true,
                 'message' => 'OTP sent to your email',
 
             ], 200);
@@ -40,7 +40,7 @@ class ResetPasswordController extends Controller
 
             return response()->json([
 
-                'error' => 'true',
+                'status' => false,
                 'message' => 'Something went wrong',
 
             ], 500);
@@ -61,9 +61,9 @@ class ResetPasswordController extends Controller
             $token = JwtToken::createToken(['email' => $req->email], $exp); //generating token with user email and expire time(60 minutes)
 
             return response()->json([
-                'success' => true,
+                'status' => true,
                 'message' => 'OTP verified successfully',
-            ])->cookie('reset_password_token', $token['token'], 60); // Setting token in cookie valid for 60 minutes
+            ],200)->cookie('reset_password_token', $token['token'], 60); // Setting token in cookie valid for 60 minutes
 
 
         } catch (\Exception $e) {
@@ -72,7 +72,7 @@ class ResetPasswordController extends Controller
 
             return response()->json([
 
-                'error' => 'true',
+                'status' => false,
                 'message' => 'Something went wrong',
 
             ], 500);
@@ -86,7 +86,7 @@ class ResetPasswordController extends Controller
         if(!$req->cookie('reset_password_token')){
             return response()->json([
 
-                'error' => 'true',
+                'status' => false,
                 'message' => 'Unauthorized access - token missing',
 
             ], 401);
@@ -94,11 +94,11 @@ class ResetPasswordController extends Controller
 
 
         $decode = JwtToken::verifyToken( $req->cookie('reset_password_token') ); //verifying token from cookie
-        if( $decode['error'] == 'true' ){
+        if( $decode['error'] === true ){
 
             return response()->json([
 
-                'error' => 'true',
+                'status' => false,
                 'message' => $decode['error'],
 
             ], 401);
@@ -111,7 +111,7 @@ class ResetPasswordController extends Controller
 
         return response()->json([
 
-            'success' => 'true',
+            'status' => true,
             'message' => 'Password updated successfully',
 
         ], 200)->withoutCookie('reset_password_token'); //deleting cookie after password reset
