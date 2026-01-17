@@ -42,8 +42,8 @@ Route::group(['prefix' => 'backend'], function () {
 
     Route::group(['middleware' => JwtVerify::class], function () {
         Route::get('profile', [ProfileController::class, 'profile']);
-        // Route::post('profile-update',[ProfileController::class,'profileUpdate']);
-        Route::post('logout', [LogoutController::class, 'logout']);
+        Route::post('profile-update',[ProfileController::class,'profileUpdate']);
+        Route::post('logout', [ProfileController::class, 'logout']);
     });
 
     Route::group(['prefix' => 'products'], function () {

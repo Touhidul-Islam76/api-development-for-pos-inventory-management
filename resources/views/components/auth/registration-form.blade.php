@@ -74,6 +74,7 @@
         if (!avatarFile) return errorToast('Avatar is required');
 
 
+        // making object to gather all data of the registration form
         let formData = new FormData();
         formData.append('email', email);
         formData.append('name', fullName);
