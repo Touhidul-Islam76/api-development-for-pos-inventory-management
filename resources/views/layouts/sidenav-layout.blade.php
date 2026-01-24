@@ -39,11 +39,11 @@
 
         <div class="float-right h-auto d-flex">
             <div class="user-dropdown">
-                <img class="icon-nav-img" src="{{asset('assets/images/user.webp')}}" alt=""/>
+                <img id="userAvatar" class="icon-nav-img" src="{{asset('assets/images/user.webp')}}" alt=""/>
                 <div class="user-dropdown-content ">
                     <div class="mt-4 text-center">
-                        <img class="icon-nav-img" src="{{asset('assets/images/user.webp')}}" alt=""/>
-                        <h6>User Name</h6>
+                        <img id="DropdownUserAvatar" class="icon-nav-img" src="{{asset('assets/images/user.webp')}}" alt=""/>
+                        <h6 id="userName" >User Name</h6>
                         <hr class="user-dropdown-divider  p-0"/>
                     </div>
                     <a href="{{ route('profile')}}" class="side-bar-item">
@@ -61,7 +61,8 @@
 
 <div id="sideNavRef" class="side-nav-open">
 
-    <a href="{{ route('dashboard')}}" class="side-bar-item {{ request()->routeIs('dashboard') ? 'side-bar-item-active' : '' }}">
+    <div id="adminNav" style="display: none;">
+        <a href="{{ route('dashboard')}}" class="side-bar-item {{ request()->routeIs('dashboard') ? 'side-bar-item-active' : '' }}">
         <i class="bi bi-graph-up"></i>
         <span class="side-bar-item-caption">Dashboard</span>
     </a>
@@ -76,7 +77,7 @@
         <span class="side-bar-item-caption">Category</span>
     </a>
 
-    <a href="{{url('/productPage')}}" class="side-bar-item">
+    <a href="{{url('/backend/products/list')}}" class="side-bar-item">
         <i class="bi bi-bag"></i>
         <span class="side-bar-item-caption">Product</span>
     </a>
@@ -95,6 +96,28 @@
         <i class="bi bi-file-earmark-bar-graph"></i>
         <span class="side-bar-item-caption">Report</span>
     </a>
+    </div>
+    <div id="customerNav" style="display: none;">
+        <a href="{{ route('dashboard')}}" class="side-bar-item {{ request()->routeIs('dashboard') ? 'side-bar-item-active' : '' }}">
+        <i class="bi bi-graph-up"></i>
+        <span class="side-bar-item-caption">Dashboard</span>
+    </a>
+
+    <a href="#" class="side-bar-item">
+        <i class="bi bi-people"></i>
+        <span class="side-bar-item-caption">orders</span>
+    </a>
+
+    <a href="#" class="side-bar-item">
+        <i class="bi bi-bag"></i>
+        <span class="side-bar-item-caption">Products</span>
+    </a>
+
+    <a href="{{url('/invoicePage')}}" class="side-bar-item">
+        <i class="bi bi-receipt"></i>
+        <span class="side-bar-item-caption">Invoice</span>
+    </a>    
+    </div>
 
 
 </div>
@@ -117,6 +140,28 @@
 
 
 <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentUser = localStorage.getItem('user');
+        
+        if (currentUser) {
+            let user = JSON.parse(currentUser);
+            let currentRole = user.role;
+
+            if (currentRole == 'admin') {
+                document.getElementById('adminNav').style.display = 'block';
+                document.getElementById('customerNav').style.display = 'none';
+            } else if (currentRole == 'customer') {
+                document.getElementById('customerNav').style.display = 'block';
+                document.getElementById('adminNav').style.display = 'none';
+            }
+
+            document.getElementById('userName').innerText = user.name;
+            document.getElementById('userAvatar').src = user.avatar ? user.avatar : "{{asset('assets/images/user.webp')}}";
+            document.getElementById('DropdownUserAvatar').src = user.avatar ? user.avatar : "{{asset('assets/images/user.webp')}}";
+        }
+    });
+
     function MenuBarClickHandler() {
         let sideNav = document.getElementById('sideNavRef');
         let content = document.getElementById('contentRef');
@@ -138,6 +183,7 @@
         showLoader();
         let res = await axios.post("/backend/logout")
         hideLoader();
+        localStorage.clear();
 
         if(res.status===200){
             successToast(res.data['message'])

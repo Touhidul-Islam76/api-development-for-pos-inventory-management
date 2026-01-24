@@ -1,6 +1,9 @@
 // Set Laravel CSRF token globally for Axios
 axios.defaults.headers.common['X-CSRF-TOKEN'] =
     document.querySelector('meta[name="csrf-token"]').content;
+// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+axios.defaults.withCredentials = true;
+
 
 
 function showLoader() {

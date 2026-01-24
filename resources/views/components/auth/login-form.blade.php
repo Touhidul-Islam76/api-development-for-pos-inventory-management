@@ -47,8 +47,10 @@
             hideLoader();
 
             if (res.data.success) {
+                localStorage.setItem('user', JSON.stringify(res.data.user));
                 successToast(res.data.message);
-
+                // localStorage.setItem('jwtToken', res.data.token);
+                // console.log(res);
                 // Redirect after short delay
                 setTimeout(() => {
                     window.location.href = "/dashboard";

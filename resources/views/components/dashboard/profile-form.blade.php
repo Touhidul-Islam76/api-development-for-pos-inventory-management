@@ -77,14 +77,20 @@
 
         showLoader();
         try {
-            let res = await axios.post("/backend/profile-update", {
-                name: name,
-                phone: phone,
-                address: address
-            })
+            // let token = localStorage.getItem('jwtToken');
+            let res = await axios.post(
+                "/backend/profile-update", {
+                    name: name,
+                    phone: phone,
+                    address: address
+                }, {
+                    withCredentials: true
+                }
+            );
             hideLoader();
             if (res.status === 200 && res.data.status === true) {
                 successToast(res.data.message);
+
                 setTimeout(() => {
                     window.location.href = '/profile';
                 }, 1000)
@@ -96,6 +102,7 @@
 
             // Backend validation errors (Laravel 422)
             if (err.response && err.response.status === 422) {
+                console.log("ERR RESPONSE ---> ", err.response);
                 const allErrors = err.response.data.errors;
 
                 Object.values(allErrors).forEach(errorArray => {

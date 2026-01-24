@@ -22,7 +22,7 @@ class JwtVerify
 
             return response()->json([
 
-                'error' => 'true',
+                'error' => true,
                 'message' => 'Unauthorized: No token provided',
 
             ], 401);

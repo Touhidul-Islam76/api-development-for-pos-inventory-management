@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,12 +12,22 @@ class ProductController extends Controller
     public function index() {
 
         $products = Product::all();
-        return response()->json([
-            'error' => false,
-            'products' => $products,
-        ], 200);
 
-    }
+    // if($products){
+    //     return response()->json([
+    //         'error' => false,
+    //         'products' => $products,
+    //          'status' => 'success'
+    //     ], 200);
+    // }else{
+    //     return response()->json([
+    //         'error' => true,
+    //         'message' => 'No products found',
+    //         'status' => 'error'
+    //     ], 404);
+    // }
+    return view('pages.dashboard.admin.products.list', compact('products'));
+}
 
 
     public function store(Request $req)
@@ -144,4 +155,13 @@ class ProductController extends Controller
         ], 200 );
 
     }
+
+    public function edit( Product $product ){
+
+        $categories = Category::all();
+
+        return view('pages.dashboard.admin.products.edit', compact('product','categories'));
+
+    }
+
 }

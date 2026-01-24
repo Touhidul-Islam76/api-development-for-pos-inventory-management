@@ -24,7 +24,7 @@ Route::get('/reset-password', [PageController::class, 'resetPassword'])->name('r
 Route::get('/send-otp', [PageController::class, 'sendOtp'])->name('forgot-password.send-otp');
 Route::get('/verify-otp', [PageController::class, 'verifyOtp'])->name('forgot-password.verify-otp');
 
-Route::group(['middleware' => JwtVerify::class], function () {
+Route::group(['middleware' => "jwt"], function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [PageController::class, 'profile'])->name('profile');
 });
@@ -40,17 +40,18 @@ Route::group(['prefix' => 'backend'], function () {
     Route::post('verifyOtp', [ResetPasswordController::class, 'verifyOtp']);
     Route::post('confirmPass', [ResetPasswordController::class, 'confirmPass']);
 
-    Route::group(['middleware' => JwtVerify::class], function () {
+    Route::group(['middleware' => "jwt"], function () {
         Route::get('profile', [ProfileController::class, 'profile']);
         Route::post('profile-update',[ProfileController::class,'profileUpdate']);
         Route::post('logout', [ProfileController::class, 'logout']);
     });
 
     Route::group(['prefix' => 'products'], function () {
-        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/list', [ProductController::class, 'index']);
         Route::get('/{product}', [ProductController::class, 'show']);
         Route::post('/store', [ProductController::class, 'store']);
-        Route::put('/update/{product}', [ProductController::class, 'update']);
+        Route::put('/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('admin.products.edit');
     })->middleware(JwtVerify::class);
 
 
