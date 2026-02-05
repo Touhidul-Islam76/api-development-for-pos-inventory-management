@@ -22,9 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // 🔥 এখানে JwtVerify group রেজিস্টার করো
-        $middleware->group('jwt', [
-            JwtVerify::class,
-        ]);
+        $middleware->alias([
+        'jwt' => \App\Http\Middleware\JwtVerify::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

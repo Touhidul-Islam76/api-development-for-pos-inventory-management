@@ -67,9 +67,9 @@
         <span class="side-bar-item-caption">Dashboard</span>
     </a>
 
-    <a href="{{url('/customerPage')}}" class="side-bar-item">
+    <a href="{{route('approvedOrders')}}" class="side-bar-item">
         <i class="bi bi-people"></i>
-        <span class="side-bar-item-caption">Customer</span>
+        <span class="side-bar-item-caption">Customer Orders</span>
     </a>
 
     <a href="{{url('/categoryPage')}}" class="side-bar-item {{ request()->routeIs('categoryPage') ? 'side-bar-item-active' : '' }}">
@@ -103,12 +103,12 @@
         <span class="side-bar-item-caption">Dashboard</span>
     </a>
 
-    <a href="#" class="side-bar-item">
+    <a href="{{ route('customer.confirmedOrder') }}" class="side-bar-item">
         <i class="bi bi-people"></i>
         <span class="side-bar-item-caption">orders</span>
     </a>
 
-    <a href="#" class="side-bar-item">
+    <a href="{{ route('products.list') }}" class="side-bar-item">
         <i class="bi bi-bag"></i>
         <span class="side-bar-item-caption">Products</span>
     </a>

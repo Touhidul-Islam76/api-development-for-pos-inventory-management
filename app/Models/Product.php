@@ -15,7 +15,7 @@ class Product extends Model
         'image',
     ];
 
-    public function getProductImageUrlAttribute()
+    public function getProductImageUrlAttribute() // Get the product image URL by $this->product_image_url
     {
         if ($this->image) {
             return asset('storage/' . $this->image);

@@ -18,36 +18,40 @@ class JwtVerify
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if( !$request->cookie('loginToken') ){
+        $token = $request->cookie('loginToken');
 
+        if (!$token) {
             return response()->json([
-
                 'error' => true,
-                'message' => 'Unauthorized: No token provided',
-
+                'message' => 'Unauthorized: No token',
             ], 401);
-
         }
 
+        $decode = JwtToken::verifyToken($token);
 
-        $decode = JwtToken::verifyToken( $request->cookie('loginToken') );
-
-        if($decode['error'] == true){
-
+        if ($decode['error']) {
             return response()->json([
-
                 'error' => true,
-                'message' => 'Unauthorized: '.$decode['message'],
-
+                'message' => 'Unauthorized: ' . $decode['message'],
             ], 401);
-
         }
 
         $payload = $decode['payload'];
-        $user = User::where('email', $payload->email)->where( 'id', $payload->id )->first();
 
-        Auth::setUser($user);
+        $user = User::where('id', $payload->id)
+            ->where('email', $payload->email)
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Unauthorized: User not found',
+            ], 401);
+        }
+
+        // 🔥 THIS IS THE FIX
+        Auth::login($user);
+
         return $next($request);
-
     }
 }

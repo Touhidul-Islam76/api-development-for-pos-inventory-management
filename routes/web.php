@@ -27,6 +27,10 @@ Route::get('/verify-otp', [PageController::class, 'verifyOtp'])->name('forgot-pa
 Route::group(['middleware' => "jwt"], function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [PageController::class, 'profile'])->name('profile');
+    Route::group(["prefix" => "Products"], function () {
+        Route::get('/list', [ProductController::class, 'productList'])->name('products.list');
+        Route::get('/add', [PageController::class, 'addProduct'])->name('products.add');
+    });
 });
 
 
@@ -52,10 +56,14 @@ Route::group(['prefix' => 'backend'], function () {
         Route::post('/store', [ProductController::class, 'store']);
         Route::put('/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('admin.products.edit');
+        Route::post('/customer/order', [ProductController::class, 'customerOrder'])->name('customer.order');
+        Route::get('/customer/confirmedOrder', [ProductController::class, 'confirmedOrder'])->name('customer.confirmedOrder');
+        // customer order lists route for admin
+        Route::get('/customer/apporveOrders', [ProductController::class, 'adminApprovedOrders'])->name('approvedOrders');
     })->middleware(JwtVerify::class);
 
 
-    Route::prefix('invoice')->group(function () {
+    Route::prefix('invoices')->group(function () {
         Route::get('/', [InvoiceController::class, 'index']);
         Route::post('/store', [InvoiceController::class, 'store']);
     })->middleware(JwtVerify::class);

@@ -8,6 +8,9 @@
                     @if(session('error'))
                         <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
+                    @if(session('success'))
+                        <div id="success-alert" class="alert alert-success">{{ session('success') }}</div>
+                    @endif
                     <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -83,3 +86,14 @@
             </div>
 
 @endsection
+
+@push('script')
+    <script>
+        setTimeout(() => {
+        const alert = document.getElementById('success-alert');
+        if (alert) {
+            alert.style.display = 'none';
+        }
+    }, 2000); // 2000ms = 2 seconds
+    </script>
+@endpush
